@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://bca514597-sandesh.github.io/DSR-COLLEGE-/sitemap.xml

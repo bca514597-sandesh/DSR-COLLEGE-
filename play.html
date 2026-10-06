@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Play | Rathour Gaming Studio</title>
+<meta name="description" content="Rathour Gaming Studio के गेम बिना डाउनलोड ऑनलाइन खेलें।">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@600;700&display=swap');
+body{background:#030712;color:#f3f4f6;font-family:'Rajdhani',system-ui,sans-serif}
+.font-orbitron{font-family:'Orbitron',monospace}
+canvas{background:radial-gradient(circle at center,#0b1120,#020617);touch-action:none;aspect-ratio:360/380}
+</style>
+</head>
+<body class="min-h-screen flex flex-col">
+<header class="border-b border-cyan-950/60 bg-slate-950/90 px-4 py-3 flex items-center justify-between">
+  <a href="index.html" class="font-orbitron text-sm font-black text-cyan-400">← RATHOUR GAMING</a>
+  <a href="index.html#games-arena" class="font-orbitron text-xs bg-slate-800 hover:bg-cyan-500 hover:text-slate-950 border border-cyan-500/40 px-3 py-1.5 rounded-lg">सभी गेम्स</a>
+</header>
+<main class="flex-1 flex items-center justify-center p-3">
+  <div id="gameModal" class="flex bg-slate-950 border border-cyan-500/60 rounded-3xl w-full max-w-[500px] p-4 flex-col items-center shadow-[0_0_40px_rgba(6,182,212,0.3)]">
+    <div class="w-full mb-3">
+      <h1 id="modalGameTitle" class="font-orbitron text-lg font-black text-cyan-400">GAME</h1>
+      <p id="modalInstructions" class="text-[11px] text-slate-400"></p>
+    </div>
+    <div class="w-full flex justify-between bg-slate-900/90 px-4 py-2 rounded-xl border border-slate-800 mb-3 text-xs font-orbitron">
+      <span class="text-slate-400">SCORE: <strong id="liveScore" class="text-amber-400 text-sm">0</strong></span>
+      <span class="text-slate-400">BEST: <strong id="bestScore" class="text-cyan-400 text-sm">0</strong></span>
+    </div>
+    <div class="relative w-full flex justify-center">
+      <canvas id="gameStage" width="360" height="380" class="w-full max-w-[460px] rounded-2xl border border-cyan-950"></canvas>
+      <div id="gameOverPanel" class="absolute inset-0 bg-slate-950/90 rounded-2xl flex-col items-center justify-center hidden backdrop-blur-sm">
+        <p id="gameOverTitle" class="font-orbitron text-2xl font-black text-rose-500">SYSTEM CRASH!</p>
+        <p class="text-xs text-slate-300 mt-2 font-orbitron">FINAL SCORE: <span id="finalScoreVal" class="font-bold text-amber-400 text-base">0</span></p>
+        <button onclick="relaunchCurrentGame()" class="font-orbitron mt-5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black px-6 py-2.5 rounded-xl text-xs">PLAY AGAIN 🔄</button>
+        <a href="index.html#games-arena" class="font-orbitron mt-3 text-xs text-cyan-300 underline">दूसरा गेम खेलें</a>
+      </div>
+    </div>
+    <div id="dynamicControls" class="w-full mt-3 flex justify-center gap-2"></div>
+  </div>
+</main>
+<script>
+const GAMES=[
+ {id:'racer',n:'Cyber Racer 2077',e:'🏎️',c:'cyan',tag:'Cyber Highway',d:'3-लेन हाईवे पर नियॉन कार चलाएँ और ट्रैफिक से बचें।'},
+ {id:'snake',n:'Neon Snake DX',e:'🐍',c:'emerald',tag:'Glow Arcade',d:'एनर्जी कोर खाएं, पूंछ बढ़ाएं और रिकॉर्ड बनाएं।'},
+ {id:'bricks',n:'Quantum Breaker',e:'🧱',c:'amber',tag:'Particle FX',d:'प्लाज्मा पैडल से गेंद उछालें और सारी ब्रिक्स तोड़ें।'},
+ {id:'flap',n:'Cyber Flap',e:'🛸',c:'fuchsia',tag:'Gravity Rush',d:'ड्रोन को थ्रस्ट देकर विद्युत स्तंभों के बीच से निकालें।'},
+ {id:'memory',n:'Memory Match',e:'🃏',c:'sky',tag:'Brain Game',d:'कार्ड पलटकर सारे जोड़े ढूँढें। कम चालों में जीतें!'},
+ {id:'ttt',n:'Tic-Tac-Toe',e:'⭕',c:'rose',tag:'Vs Computer',d:'कंप्यूटर के खिलाफ X और O का क्लासिक मुकाबला।'}
+];
+const canvas=document.getElementById('gameStage'),ctx=canvas.getContext('2d');
+const $=id=>document.getElementById(id);
+const modal=$('gameModal'),dyn=$('dynamicControls'),panel=$('gameOverPanel');
+let activeGame=null,animFrame=null,tick=null,score=0,over=false,particles=[],token=0;
+
+function burst(x,y,color,n=15){for(let i=0;i<n;i++)particles.push({x,y,vx:(Math.random()-.5)*6,vy:(Math.random()-.5)*6,s:Math.random()*3+1,color,a:1,d:Math.random()*.03+.02});}
+function drawParticles(){for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.x+=p.vx;p.y+=p.vy;p.a-=p.d;if(p.a<=0){particles.splice(i,1);continue}
+ ctx.save();ctx.globalAlpha=p.a;ctx.fillStyle=p.color;ctx.shadowBlur=6;ctx.shadowColor=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.s,0,7);ctx.fill();ctx.restore();}}
+function bg(){ctx.fillStyle='#020617';ctx.fillRect(0,0,360,380)}
+function glow(c,b=12){ctx.fillStyle=c;ctx.shadowBlur=b;ctx.shadowColor=c}
+
+function launchGame(n){modal.classList.remove('hidden');modal.classList.add('flex');activeGame=n;initEngine(n)}
+function terminateGame(){modal.classList.add('hidden');modal.classList.remove('flex');cancelAnimationFrame(animFrame);clearInterval(tick);token++;activeGame=null;ctx.clearRect(0,0,360,380)}
+function relaunchCurrentGame(){if(activeGame)initEngine(activeGame)}
+function syncScore(p){score=p;$('liveScore').innerText=p;const k='rgs_record_'+activeGame,r=+localStorage.getItem(k)||0;
+ if(p>r){localStorage.setItem(k,p);$('bestScore').innerText=p}else $('bestScore').innerText=r}
+function endGame(win=false,title){over=true;$('gameOverTitle').innerText=title||(win?'YOU WIN! 🏆':'SYSTEM CRASH!');
+ $('gameOverTitle').className='font-orbitron text-2xl font-black '+(win?'text-emerald-400':'text-rose-500');
+ $('finalScoreVal').innerText=score;panel.classList.remove('hidden');panel.classList.add('flex')}
+const triggerCrash=()=>endGame(false);
+
+function initEngine(n){cancelAnimationFrame(animFrame);clearInterval(tick);token++;panel.classList.add('hidden');panel.classList.remove('flex');
+ over=false;particles=[];syncScore(0);
+ ({racer:bootRacer,snake:bootSnake,bricks:bootBricks,flap:bootFlap,memory:bootMemory,ttt:bootTTT})[n]()}
+const loopWith=f=>{const t=token;(function l(){if(over||t!==token)return;f();animFrame=requestAnimationFrame(l)})()};
+const btn=(t,fn,cls='flex-1')=>`<button onclick="${fn}" class="${cls} font-orbitron bg-slate-800 active:bg-cyan-500 active:text-black py-2.5 rounded-xl border border-slate-700 font-bold text-sm">${t}</button>`;
+const hint=t=>$('modalInstructions').innerText=t;
+
+/* 1. RACER (आसान शुरुआत, स्कोर के साथ धीरे-धीरे कठिन) */
+let car,traffic,roadOff=0,rFrame=0,rNext=0;const LANES=[70,180,290];
+function bootRacer(){$('modalGameTitle').innerText='CYBER RACER 2077';hint('◀ ▶ बटन या एरो कीज़ | स्कोर बढ़ने पर स्पीड बढ़ेगी');
+ car={lane:1,y:300,w:32,h:54,tx:180,x:180};traffic=[];rFrame=0;rNext=90;
+ dyn.innerHTML=btn('◀ LANE','shiftRacer(-1)')+btn('LANE ▶','shiftRacer(1)');
+ loopWith(()=>{bg();rFrame++;const lv=Math.min(score/150,6);roadOff=(roadOff+3+lv*.6)%40;
+  ctx.strokeStyle='#082f49';ctx.lineWidth=1.5;
+  for(let y=roadOff;y<380;y+=40){ctx.beginPath();ctx.moveTo(125,y);ctx.lineTo(125,y+20);ctx.moveTo(235,y);ctx.lineTo(235,y+20);ctx.stroke()}
+  ctx.save();ctx.strokeStyle='#06b6d4';ctx.shadowBlur=10;ctx.shadowColor='#06b6d4';ctx.strokeRect(15,0,330,380);ctx.restore();
+  car.x+=(car.tx-car.x)*.25;ctx.save();glow('#06b6d4',15);ctx.fillRect(car.x-16,car.y,32,54);ctx.fillStyle='#fff';ctx.fillRect(car.x-12,car.y-6,6,6);ctx.fillRect(car.x+6,car.y-6,6,6);ctx.restore();
+  if(rFrame>=rNext){const l=Math.floor(Math.random()*3);traffic.push({x:LANES[l],y:-60,h:50,sp:2.8+lv*.5+Math.random()*.7});rNext=rFrame+Math.max(45,95-lv*8)+Math.random()*25}
+  for(let i=traffic.length-1;i>=0;i--){const t=traffic[i];t.y+=t.sp;ctx.save();glow('#f43f5e');ctx.fillRect(t.x-16,t.y,32,t.h);ctx.restore();
+   if(Math.abs(car.x-t.x)<26&&car.y<t.y+t.h&&car.y+car.h>t.y){burst(car.x,car.y+20,'#06b6d4',25);burst(t.x,t.y+20,'#f43f5e',25);triggerCrash();return}
+   if(t.y>440){traffic.splice(i,1);syncScore(score+10)}}
+  drawParticles()})}
+function shiftRacer(d){if(!car)return;car.lane=Math.max(0,Math.min(2,car.lane+d));car.tx=LANES[car.lane]}
+
+/* 2. SNAKE (धीमी शुरुआत, हर खाने पर थोड़ी तेज़) */
+let sBody,sVel,sNext,sCore,sFoods;const GD=18;
+function bootSnake(){$('modalGameTitle').innerText='NEON SNAKE DX';hint('एरो बटन या कीज़ से दिशा बदलें');
+ sBody=[{x:10,y:10},{x:9,y:10},{x:8,y:10}];sVel={x:1,y:0};sNext={x:1,y:0};sFoods=0;spawnCore();
+ dyn.innerHTML=`<div class="grid grid-cols-3 gap-1.5 w-44"><div></div>${btn('▲','turnSnake(0,-1)','')}<div></div>${btn('◀','turnSnake(-1,0)','')}${btn('▼','turnSnake(0,1)','')}${btn('▶','turnSnake(1,0)','')}</div>`;
+ const t=token;
+ (function step(){if(over||t!==token)return;sVel=sNext;const h={x:sBody[0].x+sVel.x,y:sBody[0].y+sVel.y};
+  if(h.x<0||h.x>=20||h.y<0||h.y>=21||sBody.some(b=>b.x===h.x&&b.y===h.y)){burst(sBody[0].x*GD+9,sBody[0].y*GD+9,'#10b981',30);triggerCrash();bg();drawParticles();return}
+  sBody.unshift(h);
+  if(h.x===sCore.x&&h.y===sCore.y){burst(h.x*GD+9,h.y*GD+9,'#38bdf8');sFoods++;syncScore(score+20);spawnCore()}else sBody.pop();
+  bg();ctx.save();glow('#f43f5e',15);ctx.beginPath();ctx.arc(sCore.x*GD+9,sCore.y*GD+9,7,0,7);ctx.fill();ctx.restore();
+  sBody.forEach((s,i)=>{ctx.save();glow(i?'#059669':'#34d399',i?5:12);ctx.fillRect(s.x*GD+1,s.y*GD+1,GD-2,GD-2);ctx.restore()});
+  drawParticles();tick=setTimeout(step,Math.max(80,180-sFoods*5))})()}
+function spawnCore(){let c;do{c={x:Math.floor(Math.random()*20),y:Math.floor(Math.random()*21)}}while(sBody.some(b=>b.x===c.x&&b.y===c.y));sCore=c}
+function turnSnake(x,y){if(sVel&&(sVel.x!==-x||sVel.y!==-y))sNext={x,y}}
+
+/* 3. BREAKER (धीमी गेंद, बड़ा पैडल, ईंट टूटने पर थोड़ी तेज़) */
+let pad,ball,bricks,bSpd,bFrame;
+function bootBricks(){$('modalGameTitle').innerText='QUANTUM BREAKER';hint('बटन, कीज़ या स्क्रीन पर उँगली/माउस घुमाएँ');
+ pad={x:130,y:345,w:100,h:12};bSpd=2.6;bFrame=0;ball={x:180,y:300,r:6,dx:1.4,dy:-bSpd};bricks=[];
+ const cs=['#f43f5e','#fbbf24','#06b6d4','#a855f7'];
+ for(let r=0;r<4;r++)for(let c=0;c<6;c++)bricks.push({x:c*56+14,y:r*22+40,w:48,h:14,color:cs[r],on:true});
+ dyn.innerHTML=btn('◀ LEFT','shiftPaddle(-35)')+btn('RIGHT ▶','shiftPaddle(35)');
+ loopWith(()=>{bg();if(bFrame++>45){ball.x+=ball.dx;ball.y+=ball.dy}
+  if(ball.x-ball.r<0){ball.dx=Math.abs(ball.dx);burst(ball.x,ball.y,'#06b6d4',6)}
+  if(ball.x+ball.r>360){ball.dx=-Math.abs(ball.dx);burst(ball.x,ball.y,'#06b6d4',6)}
+  if(ball.y-ball.r<0){ball.dy=Math.abs(ball.dy);burst(ball.x,ball.y,'#06b6d4',6)}
+  if(ball.y+ball.r>380){burst(ball.x,ball.y,'#f43f5e',20);triggerCrash();return}
+  if(ball.dy>0&&ball.y+ball.r>=pad.y&&ball.y<pad.y+pad.h&&ball.x>=pad.x-4&&ball.x<=pad.x+pad.w+4){ball.dy=-bSpd;let nd=Math.max(-3.5,Math.min(3.5,(ball.x-(pad.x+pad.w/2))*.08));if(Math.abs(nd)<.9)nd=(Math.random()<.5?-1:1)*.9;ball.dx=nd;burst(ball.x,ball.y,'#38bdf8',10)}
+  let left=false;
+  bricks.forEach(b=>{if(!b.on)return;left=true;if(ball.x>b.x&&ball.x<b.x+b.w&&ball.y>b.y&&ball.y<b.y+b.h){b.on=false;bSpd=Math.min(4.6,bSpd+.04);ball.dy=Math.sign(ball.dy)*-bSpd;burst(b.x+24,b.y+7,b.color,16);syncScore(score+15)}});
+  if(!left){syncScore(score+50);endGame(true);return}
+  ctx.save();glow('#06b6d4');ctx.fillRect(pad.x,pad.y,pad.w,pad.h);ctx.restore();
+  ctx.save();glow('#fff',10);ctx.beginPath();ctx.arc(ball.x,ball.y,ball.r,0,7);ctx.fill();ctx.restore();
+  bricks.forEach(b=>{if(b.on){ctx.save();glow(b.color,8);ctx.fillRect(b.x,b.y,b.w,b.h);ctx.restore()}});
+  drawParticles()})}
+function shiftPaddle(v){if(pad)pad.x=Math.max(10,Math.min(360-pad.w-10,pad.x+v))}
+
+/* 4. FLAP (पहले टैप तक ड्रोन रुका रहता है, चौड़ा रास्ता, धीमी रफ़्तार) */
+let drone,pillars,fFrame,fStarted,fNext,lastTop;
+function bootFlap(){$('modalGameTitle').innerText='CYBER FLAP';hint('TAP / SPACE / क्लिक से शुरू करें और थ्रस्ट दें');
+ drone={x:70,y:190,r:11,v:0};pillars=[];fFrame=0;fStarted=false;fNext=40;lastTop=120;dyn.innerHTML=btn('TAP TO THRUST 🚀','thrustDrone()','w-full');
+ loopWith(()=>{bg();const lv=Math.min(score/100,8),gap=160-lv*5,spd=1.7+lv*.1;
+  if(fStarted){fFrame++;drone.v=Math.min(5.5,drone.v+.2);drone.y+=drone.v}else drone.y=190+Math.sin(Date.now()/250)*6;
+  if(drone.y+drone.r>380||drone.y-drone.r<0){burst(drone.x,drone.y,'#f43f5e',25);triggerCrash();return}
+  if(fStarted&&fFrame>=fNext){const top=Math.max(30,Math.min(380-gap-30,lastTop+(Math.random()-.5)*150));lastTop=top;pillars.push({x:360,top,bottom:380-(top+gap),passed:false,gap});fNext=fFrame+Math.round(200/spd)}
+  for(let i=pillars.length-1;i>=0;i--){const p=pillars[i];p.x-=spd;ctx.save();glow('#10b981',10);ctx.fillRect(p.x,0,36,p.top);ctx.fillRect(p.x,380-p.bottom,36,p.bottom);ctx.restore();
+   if(drone.x+drone.r-2>p.x&&drone.x-drone.r+2<p.x+36&&(drone.y-drone.r+2<p.top||drone.y+drone.r-2>380-p.bottom)){burst(drone.x,drone.y,'#f43f5e',25);triggerCrash();return}
+   if(!p.passed&&p.x+36<drone.x){p.passed=true;syncScore(score+10)}
+   if(p.x<-50)pillars.splice(i,1)}
+  ctx.save();glow('#e879f9',14);ctx.beginPath();ctx.arc(drone.x,drone.y,drone.r,0,7);ctx.fill();ctx.restore();
+  if(!fStarted){ctx.save();ctx.textAlign='center';ctx.font='bold 14px Orbitron,monospace';ctx.fillStyle='#e879f9';ctx.fillText('TAP TO START',180,130);ctx.restore()}
+  drawParticles()})}
+function thrustDrone(){if(drone){fStarted=true;drone.v=-4.3;burst(drone.x-5,drone.y+5,'#e879f9',6)}}
+
+/* 5. MEMORY MATCH (नया) */
+let mem,memSel,memLock,memMoves,memFound;
+function bootMemory(){$('modalGameTitle').innerText='MEMORY MATCH';hint('कार्ड पर टैप करके जोड़े ढूँढें');dyn.innerHTML='';
+ const em=['🚀','👾','🔮','💎','⚡','🎧','🧬','🛰️'];mem=[...em,...em].sort(()=>Math.random()-.5).map(e=>({e,up:false,done:false}));
+ memSel=[];memLock=false;memMoves=0;memFound=0;drawMem()}
+const MC={w:85,h:90,g:8};
+function drawMem(){bg();ctx.textAlign='center';ctx.textBaseline='middle';
+ mem.forEach((c,i)=>{const x=10+(i%4)*(MC.w+4),y=10+Math.floor(i/4)*(MC.h+4);ctx.save();
+  glow(c.done?'#10b981':c.up?'#06b6d4':'#1e293b',c.up||c.done?12:0);ctx.fillRect(x,y,MC.w-4,MC.h-4);ctx.restore();
+  ctx.font='34px serif';ctx.fillStyle='#fff';ctx.fillText(c.up||c.done?c.e:'❓',x+MC.w/2-2,y+MC.h/2-2)});
+ ctx.font='bold 11px Orbitron,monospace';ctx.fillStyle='#94a3b8';ctx.fillText('MOVES: '+memMoves,180,372)}
+function memClick(px,py){if(memLock||over)return;const c=Math.floor((px-10)/(MC.w+4)),r=Math.floor((py-10)/(MC.h+4));
+ if(c<0||c>3||r<0||r>3)return;const i=r*4+c,k=mem[i];if(k.up||k.done)return;k.up=true;memSel.push(i);drawMem();
+ if(memSel.length===2){memMoves++;const[a,b]=memSel;memLock=true;const t=token;
+  setTimeout(()=>{if(t!==token)return;if(mem[a].e===mem[b].e){mem[a].done=mem[b].done=true;memFound++;syncScore(score+20)}else mem[a].up=mem[b].up=false;
+   memSel=[];memLock=false;drawMem();
+   if(memFound===8){syncScore(score+Math.max(0,100-memMoves*5));endGame(true,'YOU WIN! 🏆')}},650)}}
+
+/* 6. TIC-TAC-TOE (नया) */
+let bd,tLock;const WL=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+function bootTTT(){$('modalGameTitle').innerText='TIC-TAC-TOE';hint('आप X हैं। खाली खाने पर टैप करें');dyn.innerHTML='';bd=Array(9).fill('');tLock=false;drawTTT()}
+function winner(b){for(const[a,c,d]of WL)if(b[a]&&b[a]===b[c]&&b[a]===b[d])return b[a];return b.every(x=>x)?'D':null}
+function drawTTT(){bg();ctx.strokeStyle='#0e7490';ctx.lineWidth=3;
+ for(let i=1;i<3;i++){ctx.beginPath();ctx.moveTo(i*120,15);ctx.lineTo(i*120,365);ctx.moveTo(15,i*126);ctx.lineTo(345,i*126);ctx.stroke()}
+ ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='bold 64px Orbitron,monospace';
+ bd.forEach((v,i)=>{if(!v)return;ctx.save();glow(v==='X'?'#06b6d4':'#f43f5e',16);ctx.fillText(v,(i%3)*120+60,Math.floor(i/3)*126+66);ctx.restore()})}
+function tttClick(px,py){if(tLock||over)return;const i=Math.floor(py/126)*3+Math.floor(px/120);if(i<0||i>8||bd[i])return;
+ bd[i]='X';drawTTT();if(tttEnd())return;tLock=true;const t=token;
+ setTimeout(()=>{if(t!==token)return;bd[aiMove()]='O';tLock=false;drawTTT();tttEnd()},350)}
+function aiMove(){const e=bd.map((v,i)=>v?-1:i).filter(i=>i>=0);
+ if(Math.random()<.25)return e[Math.floor(Math.random()*e.length)];
+ for(const p of['O','X'])for(const i of e){const b=[...bd];b[i]=p;if(winner(b)===p)return i}
+ if(!bd[4])return 4;return e[Math.floor(Math.random()*e.length)]}
+function tttEnd(){const w=winner(bd);if(!w)return false;
+ if(w==='X'){syncScore(score+50);endGame(true,'YOU WIN! 🏆')}else if(w==='O')endGame(false,'COMPUTER WINS!');else{syncScore(score+10);endGame(false,'DRAW! 🤝')}return true}
+
+/* INPUT */
+canvas.addEventListener('click',e=>{const r=canvas.getBoundingClientRect(),x=(e.clientX-r.left)*360/r.width,y=(e.clientY-r.top)*380/r.height;
+ if(activeGame==='memory')memClick(x,y);else if(activeGame==='ttt')tttClick(x,y)});
+canvas.addEventListener('touchstart',e=>e.preventDefault(),{passive:false});
+canvas.addEventListener('pointerdown',e=>{if(activeGame==='flap')thrustDrone()});
+canvas.addEventListener('pointermove',e=>{if(activeGame==='bricks'&&pad){const r=canvas.getBoundingClientRect();pad.x=Math.max(10,Math.min(360-pad.w-10,(e.clientX-r.left)*360/r.width-pad.w/2))}});
+addEventListener('keydown',e=>{if(!activeGame)return;const k=e.key;
+ if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(k))e.preventDefault();
+ if(activeGame==='racer'){if(k==='ArrowLeft')shiftRacer(-1);if(k==='ArrowRight')shiftRacer(1)}
+ else if(activeGame==='snake'){if(k==='ArrowUp')turnSnake(0,-1);if(k==='ArrowDown')turnSnake(0,1);if(k==='ArrowLeft')turnSnake(-1,0);if(k==='ArrowRight')turnSnake(1,0)}
+ else if(activeGame==='bricks'){if(k==='ArrowLeft')shiftPaddle(-35);if(k==='ArrowRight')shiftPaddle(35)}
+ else if(activeGame==='flap'&&(e.code==='Space'||k==='ArrowUp'))thrustDrone()});
+
+/* URL से गेम चुनें: play.html?game=racer */
+const G=GAMES.find(g=>g.id===new URLSearchParams(location.search).get('game'));
+if(!G){location.replace('index.html#games-arena')}
+else{document.title=G.n+' - Play Free Online | Rathour Gaming Studio';launchGame(G.id)}
+</script>
+</body>
+</html>

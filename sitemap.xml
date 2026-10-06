@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://bca514597-sandesh.github.io/DSR-COLLEGE-/</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://yourdomain.com/</loc></url>
+  <url><loc>https://yourdomain.com/play.html?game=racer</loc></url>
+  <url><loc>https://yourdomain.com/play.html?game=snake</loc></url>
+  <url><loc>https://yourdomain.com/play.html?game=bricks</loc></url>
+  <url><loc>https://yourdomain.com/play.html?game=flap</loc></url>
+  <url><loc>https://yourdomain.com/play.html?game=memory</loc></url>
+  <url><loc>https://yourdomain.com/play.html?game=ttt</loc></url>
 </urlset>

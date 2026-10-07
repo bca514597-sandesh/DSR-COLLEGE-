@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>डीएसआर कॉलेज - ऑनलाइन प्रवेश पोर्टल</title>
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        header {
+            background: linear-gradient(135deg, #0d47a1, #1976d2);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+        header p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+        }
+        h2 {
+            color: #0d47a1;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 8px;
+        }
+        /* Courses Grid */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .course-box {
+            background: #eef3fb;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #1976d2;
+            font-weight: 600;
+            text-align: center;
+        }
+        /* Gallery Grid */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .gallery-grid img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease;
+        }
+        .gallery-grid img:hover {
+            transform: scale(1.03);
+        }
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #444;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #1976d2;
+        }
+        .btn-submit {
+            background-color: #0d47a1;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+        .btn-submit:hover {
+            background-color: #1565c0;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #777;
+            font-size: 0.9rem;
+            background: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>डीएसआर मेमोरियल महाविद्यालय</h1>
+        <p>गुलरिया, बदायूं | उच्च शिक्षा एवं तकनीकी प्रशिक्षण संस्थान</p>
+    </header>
+
+    <div class="container">
+        
+        <!-- कॉलेज गैलरी (तस्वीरें) -->
+        <div class="card">
+            <h2>कॉलेज की झलकियाँ (Gallery)</h2>
+            <div class="gallery-grid">
+                <!-- आपके द्वारा भेजे गए फोटो -->
+                <img src="36145.jpg" alt="College Campus">
+                <img src="36747.jpg" alt="Computer Lab">
+                <img src="36396.jpg" alt="Teachers Day Celebration">
+                <img src="36777.jpg" alt="Students in Lab">
+                <img src="36226.jpg" alt="DSR Degree College Gate">
+                <img src="36199.jpg" alt="College Group Photo">
+                <img src="36217.jpg" alt="Students Activity">
+                <img src="36211.jpg" alt="College Function">
+                <img src="36193.jpg" alt="Campus View">
+            </div>
+        </div>
+
+        <!-- उपलब्ध पाठ्यक्रम -->
+        <div class="card">
+            <h2>उपलब्ध पाठ्यक्रम (Courses)</h2>
+            <div class="courses-grid">
+                <div class="course-box">BCA (कम्प्यूटर एप्लीकेशन)</div>
+                <div class="course-box">BA (कला संकाय)</div>
+                <div class="course-box">B.Sc (विज्ञान संकाय)</div>
+                <div class="course-box">B.Com (वाणिज्य संकाय)</div>
+            </div>
+        </div>
+
+        <!-- ऑनलाइन एडमिशन फॉर्म (Formspree के साथ) -->
+        <div class="card">
+            <h2>ऑनलाइन एडमिशन / पूछताछ फॉर्म</h2>
+            <!-- "YOUR_FORMSPREE_ID" की जगह अपनी Formspree ID डालें -->
+            <form action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST">
+                <div class="form-group">
+                    <label for="name">छात्र/छात्रा का पूरा नाम *</label>
+                    <input type="text" id="name" name="Name" required placeholder="अपना नाम दर्ज करें">
+                </div>
+
+                <div class="form-group">
+                    <label for="father">पिता का नाम *</label>
+                    <input type="text" id="father" name="FatherName" required placeholder="पिता का नाम दर्ज करें">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">मोबाइल नंबर (WhatsApp) *</label>
+                    <input type="tel" id="phone" name="Phone" pattern="[0-9]{10}" required placeholder="10 अंकों का मोबाइल नंबर">
+                </div>
+
+                <div class="form-group">
+                    <label for="course">प्रवेश हेतु इच्छित कोर्स *</label>
+                    <select id="course" name="Course" required>
+                        <option value="">-- कोर्स चुनें --</option>
+                        <option value="BCA">BCA (Bachelor of Computer Applications)</option>
+                        <option value="BA">BA (Bachelor of Arts)</option>
+                        <option value="B.Sc">B.Sc (Bachelor of Science)</option>
+                        <option value="B.Com">B.Com (Bachelor of Commerce)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-submit">आवेदन पत्र सबमिट करें</button>
+            </form>
+        </div>
+
+        <!-- कॉलेज की लोकेशन (Google Map) -->
+        <div class="card">
+            <h2>कॉलेज की लोकेशन (Map)</h2>
+            <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d113837.75133611758!2d79.0305101!3d28.093556!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39a007f35a96a92f%3A0xa618991ef1466035!2sD-S-R%20MEMORIAL%20DEGREE%20COLLEGE.GULARIA%2C%20BADAUN!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" 
+                width="100%" 
+                height="350" 
+                style="border:0; border-radius: 8px;" 
+                allowfullscreen="" 
+                loading="lazy" 
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>© 2026 डीएसआर मेमोरियल महाविद्यालय. सर्वाधिकार सुरक्षित.</p>
+    </footer>
+
+</body>
+</html>

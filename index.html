@@ -3,210 +3,356 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>डीएसआर कॉलेज - ऑनलाइन प्रवेश पोर्टल</title>
+    <title>डीएसआर मेमोरियल महाविद्यालय - प्रवेश पोर्टल</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        :root {
+            --primary-color: #ff6600;
+            --secondary-color: #0d47a1;
+            --text-color: #333;
+            --bg-light: #f8f9fa;
+        }
+
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
         }
+
         body {
-            background-color: #f4f6f9;
-            color: #333;
-            line-height: 1.6;
+            background-color: var(--bg-light);
+            color: var(--text-color);
         }
-        header {
-            background: linear-gradient(135deg, #0d47a1, #1976d2);
-            color: white;
-            padding: 30px 20px;
-            text-align: center;
-        }
-        header h1 {
-            font-size: 2rem;
-            margin-bottom: 5px;
-        }
-        header p {
-            font-size: 1rem;
-            opacity: 0.9;
-        }
-        .container {
-            max-width: 900px;
-            margin: 20px auto;
-            padding: 0 15px;
-        }
-        .card {
+
+        /* Sticky Navbar */
+        nav {
             background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-            margin-bottom: 25px;
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
-        h2 {
-            color: #0d47a1;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #e0e0e0;
-            padding-bottom: 8px;
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        /* Courses Grid */
-        .courses-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 10px;
+
+        .logo span {
+            color: var(--secondary-color);
         }
-        .course-box {
-            background: #eef3fb;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #1976d2;
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            margin: 0 15px;
             font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .btn-apply-nav {
+            background: var(--primary-color);
+            color: white !important;
+            padding: 10px 20px;
+            border-radius: 25px;
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            /* Background image updated */
+            background: linear-gradient(rgba(13, 71, 161, 0.85), rgba(13, 71, 161, 0.85)), url('IMG-20260905-WA0009.jpg') center/cover;
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-align: center;
+            color: white;
+            padding: 20px;
         }
-        /* Gallery Grid */
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-        .gallery-grid img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-            transition: transform 0.3s ease;
-        }
-        .gallery-grid img:hover {
-            transform: scale(1.03);
-        }
-        /* Form Styles */
-        .form-group {
+
+        .hero-content h1 {
+            font-size: 3.5rem;
             margin-bottom: 15px;
+            animation: fadeInDown 1s ease;
         }
-        label {
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease;
+        }
+
+        .btn-main {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px 35px;
+            font-size: 1.2rem;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: inline-block;
+        }
+
+        .btn-main:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 102, 0, 0.5);
+        }
+
+        /* Section Titles */
+        .section-title {
+            text-align: center;
+            margin: 60px 0 30px;
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            width: 80px;
+            height: 4px;
+            background: var(--primary-color);
             display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #444;
+            margin: 10px auto 0;
+            border-radius: 2px;
         }
-        input, select {
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Modern Gallery */
+        .gallery-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            height: 250px;
+        }
+
+        .gallery-item img {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        /* Admission Form */
+        .admission-section {
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            margin: 40px auto;
+            max-width: 800px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #eee;
+            border-radius: 10px;
             font-size: 1rem;
+            transition: border-color 0.3s;
         }
-        input:focus, select:focus {
+
+        .input-group input:focus, .input-group select:focus {
             outline: none;
-            border-color: #1976d2;
+            border-color: var(--primary-color);
         }
-        .btn-submit {
-            background-color: #0d47a1;
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        .submit-btn {
+            background: var(--secondary-color);
             color: white;
             border: none;
-            padding: 12px 25px;
-            font-size: 1.1rem;
-            border-radius: 6px;
-            cursor: pointer;
             width: 100%;
-            transition: 0.3s;
+            padding: 15px;
+            font-size: 1.2rem;
+            border-radius: 10px;
+            cursor: pointer;
             font-weight: bold;
+            transition: background 0.3s;
         }
-        .btn-submit:hover {
-            background-color: #1565c0;
+
+        .submit-btn:hover {
+            background: #093375;
         }
+
+        /* Map Section */
+        .map-section {
+            margin-bottom: 50px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        /* Footer */
         footer {
+            background: #111;
+            color: white;
             text-align: center;
-            padding: 20px;
-            color: #777;
-            font-size: 0.9rem;
-            background: #e0e0e0;
+            padding: 30px 20px;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .full-width { grid-column: span 1; }
+            .hero-content h1 { font-size: 2.2rem; }
+            nav { flex-direction: column; gap: 15px; padding: 15px; }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>डीएसआर मेमोरियल महाविद्यालय</h1>
-        <p>गुलरिया, बदायूं | उच्च शिक्षा एवं तकनीकी प्रशिक्षण संस्थान</p>
-    </header>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="logo">
+            <i class="fas fa-graduation-cap"></i> 
+            DSR <span>College</span>
+        </div>
+        <div class="nav-links">
+            <a href="#home">होम</a>
+            <a href="#gallery">गैलरी</a>
+            <a href="#location">लोकेशन</a>
+            <a href="#admission" class="btn-apply-nav">अप्लाई करें</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>डीएसआर मेमोरियल महाविद्यालय</h1>
+            <p>गुलरिया, बदायूं | महात्मा ज्योतिबा फुले रुहेलखंड विश्वविद्यालय, बरेली से संबद्ध</p>
+            <a href="#admission" class="btn-main">ऑनलाइन एडमिशन 2026-27</a>
+        </div>
+    </section>
 
     <div class="container">
         
-        <!-- कॉलेज गैलरी (तस्वीरें) -->
-        <div class="card">
-            <h2>कॉलेज की झलकियाँ (Gallery)</h2>
-            <div class="gallery-grid">
-                <!-- आपके द्वारा भेजे गए फोटो -->
-                <img src="36145.jpg" alt="College Campus">
-                <img src="36747.jpg" alt="Computer Lab">
-                <img src="36396.jpg" alt="Teachers Day Celebration">
-                <img src="36777.jpg" alt="Students in Lab">
-                <img src="36226.jpg" alt="DSR Degree College Gate">
-                <img src="36199.jpg" alt="College Group Photo">
-                <img src="36217.jpg" alt="Students Activity">
-                <img src="36211.jpg" alt="College Function">
-                <img src="36193.jpg" alt="Campus View">
-            </div>
+        <!-- Gallery Section -->
+        <h2 class="section-title" id="gallery">कॉलेज की झलकियाँ</h2>
+        <div class="gallery-container">
+            <div class="gallery-item"><img src="IMG-20260905-WA0005.jpg" alt="College Campus"></div>
+            <div class="gallery-item"><img src="IMG-20260905-WA0009.jpg" alt="Group Photo"></div>
+            <div class="gallery-item"><img src="IMG-20260905-WA0010.jpg" alt="Students at Gate"></div>
+            <div class="gallery-item"><img src="IMG-20260905-WA0065.jpg" alt="Teachers Day"></div>
+            <div class="gallery-item"><img src="IMG-20260905-WA0079.jpg" alt="Teachers Day Celebration"></div>
+            <div class="gallery-item"><img src="IMG-20260907-WA0000.jpg" alt="Computer Lab"></div>
+            <div class="gallery-item"><img src="IMG-20260907-WA0001.jpg" alt="Students in Lab"></div>
+            <div class="gallery-item"><img src="IMG-20260905-WA0025.jpg" alt="College Events"></div>
         </div>
 
-        <!-- उपलब्ध पाठ्यक्रम -->
-        <div class="card">
-            <h2>उपलब्ध पाठ्यक्रम (Courses)</h2>
-            <div class="courses-grid">
-                <div class="course-box">BCA (कम्प्यूटर एप्लीकेशन)</div>
-                <div class="course-box">BA (कला संकाय)</div>
-                <div class="course-box">B.Sc (विज्ञान संकाय)</div>
-                <div class="course-box">B.Com (वाणिज्य संकाय)</div>
-            </div>
-        </div>
-
-        <!-- ऑनलाइन एडमिशन फॉर्म (Formspree के साथ) -->
-        <div class="card">
-            <h2>ऑनलाइन एडमिशन / पूछताछ फॉर्म</h2>
-            <!-- "YOUR_FORMSPREE_ID" की जगह अपनी Formspree ID डालें -->
+        <!-- Admission Form -->
+        <h2 class="section-title" id="admission">एडमिशन पूछताछ फॉर्म</h2>
+        <div class="admission-section">
             <form action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST">
-                <div class="form-group">
-                    <label for="name">छात्र/छात्रा का पूरा नाम *</label>
-                    <input type="text" id="name" name="Name" required placeholder="अपना नाम दर्ज करें">
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label>छात्र/छात्रा का नाम</label>
+                        <input type="text" name="Name" required placeholder="पूरा नाम दर्ज करें">
+                    </div>
+                    <div class="input-group">
+                        <label>पिता का नाम</label>
+                        <input type="text" name="FatherName" required placeholder="पिता का नाम">
+                    </div>
+                    <div class="input-group">
+                        <label>मोबाइल नंबर</label>
+                        <input type="tel" name="Phone" required placeholder="10 अंकों का नंबर">
+                    </div>
+                    <div class="input-group">
+                        <label>कोर्स चुनें</label>
+                        <select name="Course" required>
+                            <option value="">-- चयन करें --</option>
+                            <option value="BCA">BCA</option>
+                            <option value="BA">BA</option>
+                            <option value="B.Sc">B.Sc</option>
+                            <option value="B.Com">B.Com</option>
+                        </select>
+                    </div>
+                    <div class="input-group full-width">
+                        <label>अपना संदेश या सवाल (वैकल्पिक)</label>
+                        <input type="text" name="Message" placeholder="यदि कोई सवाल हो तो यहाँ लिखें...">
+                    </div>
+                    <div class="full-width">
+                        <button type="submit" class="submit-btn">आवेदन जमा करें <i class="fas fa-paper-plane"></i></button>
+                    </div>
                 </div>
-
-                <div class="form-group">
-                    <label for="father">पिता का नाम *</label>
-                    <input type="text" id="father" name="FatherName" required placeholder="पिता का नाम दर्ज करें">
-                </div>
-
-                <div class="form-group">
-                    <label for="phone">मोबाइल नंबर (WhatsApp) *</label>
-                    <input type="tel" id="phone" name="Phone" pattern="[0-9]{10}" required placeholder="10 अंकों का मोबाइल नंबर">
-                </div>
-
-                <div class="form-group">
-                    <label for="course">प्रवेश हेतु इच्छित कोर्स *</label>
-                    <select id="course" name="Course" required>
-                        <option value="">-- कोर्स चुनें --</option>
-                        <option value="BCA">BCA (Bachelor of Computer Applications)</option>
-                        <option value="BA">BA (Bachelor of Arts)</option>
-                        <option value="B.Sc">B.Sc (Bachelor of Science)</option>
-                        <option value="B.Com">B.Com (Bachelor of Commerce)</option>
-                    </select>
-                </div>
-
-                <button type="submit" class="btn-submit">आवेदन पत्र सबमिट करें</button>
             </form>
         </div>
 
-        <!-- कॉलेज की लोकेशन (Google Map) -->
-        <div class="card">
-            <h2>कॉलेज की लोकेशन (Map)</h2>
+        <!-- Google Map Location -->
+        <h2 class="section-title" id="location">हमारा पता</h2>
+        <div class="map-section">
             <iframe 
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d113837.75133611758!2d79.0305101!3d28.093556!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39a007f35a96a92f%3A0xa618991ef1466035!2sD-S-R%20MEMORIAL%20DEGREE%20COLLEGE.GULARIA%2C%20BADAUN!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" 
                 width="100%" 
-                height="350" 
-                style="border:0; border-radius: 8px;" 
+                height="450" 
+                style="border:0;" 
                 allowfullscreen="" 
                 loading="lazy" 
                 referrerpolicy="no-referrer-when-downgrade">
@@ -216,7 +362,8 @@
     </div>
 
     <footer>
-        <p>© 2026 डीएसआर मेमोरियल महाविद्यालय. सर्वाधिकार सुरक्षित.</p>
+        <p>© 2026 दरियाव सिंह राठौर मेमोरियल महाविद्यालय. सर्वाधिकार सुरक्षित.</p>
+        <p style="margin-top: 10px; font-size: 0.8rem; color: #888;">Designed by संदेश राठौर (राठौर गेमिंग स्टूडियो)</p>
     </footer>
 
 </body>

@@ -10,11 +10,24 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* Light Mode Variables */
         :root {
             --primary-color: #ff6600;
             --secondary-color: #0d47a1;
             --text-color: #333;
             --bg-light: #f8f9fa;
+            --card-bg: #ffffff;
+            --border-color: #eee;
+        }
+
+        /* Dark Mode Variables */
+        .dark-theme {
+            --primary-color: #ff8c00;
+            --secondary-color: #4da8da;
+            --text-color: #f1f1f1;
+            --bg-light: #121212;
+            --card-bg: #1e1e1e;
+            --border-color: #333;
         }
 
         * {
@@ -23,6 +36,7 @@
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
             scroll-behavior: smooth;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         body {
@@ -30,9 +44,30 @@
             color: var(--text-color);
         }
 
+        /* News Ticker */
+        .news-ticker {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 0;
+            font-size: 0.95rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        .news-label {
+            background: #d80000;
+            padding: 8px 15px;
+            font-weight: bold;
+            z-index: 10;
+        }
+        .news-marquee {
+            flex: 1;
+            overflow: hidden;
+        }
+
         /* Sticky Navbar */
         nav {
-            background: white;
+            background: var(--card-bg);
             padding: 15px 50px;
             display: flex;
             justify-content: space-between;
@@ -52,21 +87,22 @@
             gap: 10px;
         }
 
-        .logo span {
-            color: var(--secondary-color);
+        .logo span { color: var(--secondary-color); }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
         }
 
         .nav-links a {
             text-decoration: none;
             color: var(--text-color);
-            margin: 0 15px;
             font-weight: 600;
             transition: color 0.3s;
         }
 
-        .nav-links a:hover {
-            color: var(--primary-color);
-        }
+        .nav-links a:hover { color: var(--primary-color); }
 
         .btn-apply-nav {
             background: var(--primary-color);
@@ -76,9 +112,18 @@
             box-shadow: 0 4px 15px rgba(255, 102, 0, 0.4);
         }
 
+        /* Dark Mode Toggle Button */
+        #theme-toggle {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-color);
+            cursor: pointer;
+            outline: none;
+        }
+
         /* Hero Section */
         .hero {
-            /* Background image updated */
             background: linear-gradient(rgba(13, 71, 161, 0.85), rgba(13, 71, 161, 0.85)), url('IMG-20260905-WA0009.jpg') center/cover;
             height: 80vh;
             display: flex;
@@ -89,17 +134,8 @@
             padding: 20px;
         }
 
-        .hero-content h1 {
-            font-size: 3.5rem;
-            margin-bottom: 15px;
-            animation: fadeInDown 1s ease;
-        }
-
-        .hero-content p {
-            font-size: 1.2rem;
-            margin-bottom: 30px;
-            animation: fadeInUp 1s ease;
-        }
+        .hero-content h1 { font-size: 3.5rem; margin-bottom: 15px; }
+        .hero-content p { font-size: 1.2rem; margin-bottom: 30px; }
 
         .btn-main {
             background: var(--primary-color);
@@ -109,13 +145,7 @@
             text-decoration: none;
             border-radius: 30px;
             font-weight: bold;
-            transition: transform 0.3s, box-shadow 0.3s;
             display: inline-block;
-        }
-
-        .btn-main:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(255, 102, 0, 0.5);
         }
 
         /* Section Titles */
@@ -134,152 +164,128 @@
             background: var(--primary-color);
             display: block;
             margin: 10px auto 0;
-            border-radius: 2px;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* Principal Message Section */
+        .principal-msg {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 40px;
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
+        }
+        .principal-img {
+            width: 300px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .principal-text h3 { color: var(--primary-color); margin-bottom: 10px; font-size: 1.8rem; }
+        .principal-text p { font-size: 1.1rem; line-height: 1.8; color: var(--text-color); }
+
+        /* Facilities Grid */
+        .facilities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+        .facility-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-bottom: 4px solid var(--primary-color);
+        }
+        .facility-card i {
+            font-size: 3rem;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
         }
 
-        /* Modern Gallery */
+        /* Gallery */
         .gallery-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
-            padding: 20px 0;
         }
-
-        .gallery-item {
-            position: relative;
-            overflow: hidden;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            height: 250px;
-        }
-
-        .gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s;
-        }
-
-        .gallery-item:hover img {
-            transform: scale(1.1);
-        }
+        .gallery-item { border-radius: 15px; overflow: hidden; height: 250px; }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+        .gallery-item:hover img { transform: scale(1.1); }
 
         /* Admission Form */
         .admission-section {
-            background: white;
+            background: var(--card-bg);
             padding: 50px;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
             margin: 40px auto;
             max-width: 800px;
         }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
-        }
-
+        .input-group label { color: var(--text-color); }
         .input-group input, .input-group select {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #eee;
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
+            width: 100%; padding: 15px; border: 2px solid var(--border-color);
+            background: var(--bg-light); color: var(--text-color); border-radius: 10px;
+            margin-top: 8px; margin-bottom: 20px;
         }
-
-        .input-group input:focus, .input-group select:focus {
-            outline: none;
-            border-color: var(--primary-color);
-        }
-
-        .full-width {
-            grid-column: span 2;
-        }
-
         .submit-btn {
-            background: var(--secondary-color);
-            color: white;
-            border: none;
-            width: 100%;
-            padding: 15px;
-            font-size: 1.2rem;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s;
+            background: var(--secondary-color); color: white; border: none;
+            width: 100%; padding: 15px; font-size: 1.2rem; border-radius: 10px; cursor: pointer;
         }
 
-        .submit-btn:hover {
-            background: #093375;
+        /* Floating WhatsApp */
+        .whatsapp-float {
+            position: fixed;
+            width: 60px; height: 60px;
+            bottom: 40px; right: 40px;
+            background-color: #25d366; color: #FFF;
+            border-radius: 50px; text-align: center;
+            font-size: 30px; box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            z-index: 100; display: flex; justify-content: center; align-items: center;
+            text-decoration: none; animation: pulse 2s infinite;
         }
-
-        /* Map Section */
-        .map-section {
-            margin-bottom: 50px;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
         }
 
         /* Footer */
-        footer {
-            background: #111;
-            color: white;
-            text-align: center;
-            padding: 30px 20px;
-        }
-
-        /* Animations */
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Responsive */
+        footer { background: #111; color: white; text-align: center; padding: 30px 20px; }
+        
         @media (max-width: 768px) {
-            .form-grid { grid-template-columns: 1fr; }
-            .full-width { grid-column: span 1; }
-            .hero-content h1 { font-size: 2.2rem; }
-            nav { flex-direction: column; gap: 15px; padding: 15px; }
+            .principal-msg { flex-direction: column; text-align: center; }
+            nav { flex-direction: column; gap: 10px; }
         }
     </style>
 </head>
 <body>
 
+    <!-- Scrolling News Ticker -->
+    <div class="news-ticker">
+        <div class="news-label">ताज़ा खबर:</div>
+        <div class="news-marquee">
+            <marquee behavior="scroll" direction="left" scrollamount="6">
+                सत्र 2026-27 के लिए BCA, BA, B.Sc और B.Com में प्रवेश प्रक्रिया शुरू हो चुकी है। जल्द ही अपना ऑनलाइन आवेदन फॉर्म भरें।
+            </marquee>
+        </div>
+    </div>
+
     <!-- Navigation Bar -->
     <nav>
-        <div class="logo">
-            <i class="fas fa-graduation-cap"></i> 
-            DSR <span>College</span>
-        </div>
+        <div class="logo"><i class="fas fa-graduation-cap"></i> DSR <span>College</span></div>
         <div class="nav-links">
             <a href="#home">होम</a>
+            <a href="#about">कॉलेज के बारे में</a>
             <a href="#gallery">गैलरी</a>
-            <a href="#location">लोकेशन</a>
             <a href="#admission" class="btn-apply-nav">अप्लाई करें</a>
+            <!-- Dark Mode Toggle Button -->
+            <button id="theme-toggle" title="डार्क/लाइट मोड बदलें"><i class="fas fa-moon"></i></button>
         </div>
     </nav>
 
@@ -287,84 +293,126 @@
     <section id="home" class="hero">
         <div class="hero-content">
             <h1>डीएसआर मेमोरियल महाविद्यालय</h1>
-            <p>गुलरिया, बदायूं | महात्मा ज्योतिबा फुले रुहेलखंड विश्वविद्यालय, बरेली से संबद्ध</p>
+            <p>गुलरिया, बदायूं | उच्च शिक्षा एवं तकनीकी प्रशिक्षण संस्थान</p>
             <a href="#admission" class="btn-main">ऑनलाइन एडमिशन 2026-27</a>
         </div>
     </section>
 
     <div class="container">
         
+        <!-- Principal's Message Section -->
+        <h2 class="section-title" id="about">कॉलेज प्रशासन</h2>
+        <div class="principal-msg">
+            <img src="IMG-20260905-WA0079.jpg" alt="College Event" class="principal-img">
+            <div class="principal-text">
+                <h3>प्राचार्य का संदेश</h3>
+                <p>"डीएसआर मेमोरियल महाविद्यालय में आपका स्वागत है। हमारा उद्देश्य छात्रों को न केवल किताबी ज्ञान देना है, बल्कि उन्हें आधुनिक तकनीक (जैसे BCA) और व्यावहारिक कौशल में भी पारंगत बनाना है। हम एक ऐसा अनुशासन और माहौल प्रदान करते हैं जिससे छात्र अपने भविष्य के लक्ष्यों को आसानी से प्राप्त कर सकें।"</p>
+            </div>
+        </div>
+
+        <!-- Facilities Section -->
+        <h2 class="section-title">हमारी सुविधाएँ</h2>
+        <div class="facilities-grid">
+            <div class="facility-card">
+                <i class="fas fa-laptop-code"></i>
+                <h3>हाई-टेक कंप्यूटर लैब</h3>
+                <p>प्रोग्रामिंग और वेब डेवलपमेंट के लिए आधुनिक कंप्यूटर और इंटरनेट सुविधा।</p>
+            </div>
+            <div class="facility-card">
+                <i class="fas fa-book-reader"></i>
+                <h3>विशाल लाइब्रेरी</h3>
+                <p>सभी विषयों की महत्वपूर्ण किताबें और शांत अध्ययन कक्ष।</p>
+            </div>
+            <div class="facility-card">
+                <i class="fas fa-running"></i>
+                <h3>खेलकूद मैदान</h3>
+                <p>शारीरिक विकास के लिए कॉलेज कैंपस में विशाल क्रीड़ा स्थल।</p>
+            </div>
+            <div class="facility-card">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <h3>अनुभवी शिक्षक</h3>
+                <p>विषयों के विशेषज्ञ प्रोफेसर्स द्वारा बेहतरीन मार्गदर्शन।</p>
+            </div>
+        </div>
+
         <!-- Gallery Section -->
         <h2 class="section-title" id="gallery">कॉलेज की झलकियाँ</h2>
         <div class="gallery-container">
-            <div class="gallery-item"><img src="IMG-20260905-WA0005.jpg" alt="College Campus"></div>
+            <div class="gallery-item"><img src="IMG-20260907-WA0001.jpg" alt="Computer Lab"></div>
             <div class="gallery-item"><img src="IMG-20260905-WA0009.jpg" alt="Group Photo"></div>
-            <div class="gallery-item"><img src="IMG-20260905-WA0010.jpg" alt="Students at Gate"></div>
             <div class="gallery-item"><img src="IMG-20260905-WA0065.jpg" alt="Teachers Day"></div>
-            <div class="gallery-item"><img src="IMG-20260905-WA0079.jpg" alt="Teachers Day Celebration"></div>
-            <div class="gallery-item"><img src="IMG-20260907-WA0000.jpg" alt="Computer Lab"></div>
-            <div class="gallery-item"><img src="IMG-20260907-WA0001.jpg" alt="Students in Lab"></div>
-            <div class="gallery-item"><img src="IMG-20260905-WA0025.jpg" alt="College Events"></div>
+            <div class="gallery-item"><img src="IMG-20260907-WA0000.jpg" alt="Students coding"></div>
+            <div class="gallery-item"><img src="IMG-20260905-WA0010.jpg" alt="Students at Gate"></div>
+            <div class="gallery-item"><img src="IMG-20260905-WA0025.jpg" alt="College Event"></div>
         </div>
 
         <!-- Admission Form -->
         <h2 class="section-title" id="admission">एडमिशन पूछताछ फॉर्म</h2>
         <div class="admission-section">
             <form action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST">
-                <div class="form-grid">
-                    <div class="input-group">
-                        <label>छात्र/छात्रा का नाम</label>
-                        <input type="text" name="Name" required placeholder="पूरा नाम दर्ज करें">
-                    </div>
-                    <div class="input-group">
-                        <label>पिता का नाम</label>
-                        <input type="text" name="FatherName" required placeholder="पिता का नाम">
-                    </div>
-                    <div class="input-group">
-                        <label>मोबाइल नंबर</label>
-                        <input type="tel" name="Phone" required placeholder="10 अंकों का नंबर">
-                    </div>
-                    <div class="input-group">
-                        <label>कोर्स चुनें</label>
-                        <select name="Course" required>
-                            <option value="">-- चयन करें --</option>
-                            <option value="BCA">BCA</option>
-                            <option value="BA">BA</option>
-                            <option value="B.Sc">B.Sc</option>
-                            <option value="B.Com">B.Com</option>
-                        </select>
-                    </div>
-                    <div class="input-group full-width">
-                        <label>अपना संदेश या सवाल (वैकल्पिक)</label>
-                        <input type="text" name="Message" placeholder="यदि कोई सवाल हो तो यहाँ लिखें...">
-                    </div>
-                    <div class="full-width">
-                        <button type="submit" class="submit-btn">आवेदन जमा करें <i class="fas fa-paper-plane"></i></button>
-                    </div>
-                </div>
+                <label>छात्र/छात्रा का पूरा नाम</label>
+                <input type="text" name="Name" required placeholder="अपना नाम दर्ज करें">
+
+                <label>पिता का नाम</label>
+                <input type="text" name="FatherName" required placeholder="पिता का नाम">
+
+                <label>मोबाइल नंबर</label>
+                <input type="tel" name="Phone" required placeholder="10 अंकों का नंबर">
+
+                <label>कोर्स चुनें</label>
+                <select name="Course" required>
+                    <option value="">-- चयन करें --</option>
+                    <option value="BCA">BCA (Bachelor of Computer Applications)</option>
+                    <option value="BA">BA (Bachelor of Arts)</option>
+                    <option value="B.Sc">B.Sc (Bachelor of Science)</option>
+                    <option value="B.Com">B.Com (Bachelor of Commerce)</option>
+                </select>
+
+                <button type="submit" class="submit-btn">आवेदन जमा करें <i class="fas fa-paper-plane"></i></button>
             </form>
         </div>
 
         <!-- Google Map Location -->
-        <h2 class="section-title" id="location">हमारा पता</h2>
-        <div class="map-section">
-            <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d113837.75133611758!2d79.0305101!3d28.093556!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39a007f35a96a92f%3A0xa618991ef1466035!2sD-S-R%20MEMORIAL%20DEGREE%20COLLEGE.GULARIA%2C%20BADAUN!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" 
-                width="100%" 
-                height="450" 
-                style="border:0;" 
-                allowfullscreen="" 
-                loading="lazy" 
-                referrerpolicy="no-referrer-when-downgrade">
-            </iframe>
-        </div>
-
+        <h2 class="section-title">हमारा पता</h2>
+        <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d113837.75133611758!2d79.0305101!3d28.093556!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39a007f35a96a92f%3A0xa618991ef1466035!2sD-S-R%20MEMORIAL%20DEGREE%20COLLEGE.GULARIA%2C%20BADAUN!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" 
+            width="100%" height="400" style="border:0; border-radius: 15px; margin-bottom: 50px;" 
+            allowfullscreen="" loading="lazy">
+        </iframe>
     </div>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/919999999999?text=नमस्ते,%20मुझे%20कॉलेज%20एडमिशन%20के%20बारे%20में%20जानकारी%20चाहिए।" class="whatsapp-float" target="_blank" title="WhatsApp पर मैसेज करें">
+        <i class="fab fa-whatsapp"></i>
+    </a>
 
     <footer>
         <p>© 2026 दरियाव सिंह राठौर मेमोरियल महाविद्यालय. सर्वाधिकार सुरक्षित.</p>
-        <p style="margin-top: 10px; font-size: 0.8rem; color: #888;">Designed by संदेश राठौर (राठौर गेमिंग स्टूडियो)</p>
+        <p style="margin-top: 10px; font-size: 0.9rem; color: #aaa;">
+            Designed & Developed by <strong>संदेश राठौर (राठौर गेमिंग स्टूडियो)</strong>
+        </p>
     </footer>
 
+    <!-- JavaScript for Dark Mode Toggle -->
+    <script>
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = themeToggleBtn.querySelector('i');
+        const body = document.body;
+
+        themeToggleBtn.addEventListener('click', () => {
+            body.classList.toggle('dark-theme');
+            
+            // Icon Change Logic
+            if(body.classList.contains('dark-theme')){
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+                themeIcon.style.color = '#ffda00'; // Sun color
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+                themeIcon.style.color = ''; // Default moon color
+            }
+        });
+    </script>
 </body>
 </html>
